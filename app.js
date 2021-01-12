@@ -76,18 +76,24 @@ const employeeInfo = [
 
 ]
 
+// can this be done without async/await?
 async function init() {
-    let answer = await inquirer.prompt(newEmployee);
-    if (answer.employee === false) {
-        console.log("Bye for now! See you when you have new hires!");
-    }
-    else {let employeeInfoAnswers = await inquirer.prompt(employeeInfo)
-        createEmployee(employeeInfoAnswers);
-        init();
-        const teamInfo = render(team);
-        fs.writeFile(outputPath, teamInfo, (error) => {console.log(error)});
-    };
-}
+    await inquirer.prompt(newEmployee).then( (answer) => {
+        if (answer.employee === false) {
+            console.log("Bye for now! See you when you have new hires!");
+        }
+        else {let employeeInfoAnswers = inquirer.prompt(employeeInfo)
+            createEmployee(employeeInfoAnswers);
+            // init();
+            const teamInfo = render(team);
+            fs.writeFile(outputPath, teamInfo, (error) => {console.log(error)});
+        }
+    }) 
+};
+
+// async function init() {
+//     await inquirer.prompt(newEmployee)
+// }
 
 function createManager (answers) {
     const manager = new Manager (answers.name, answers.id, answers.id, answers.phone);
